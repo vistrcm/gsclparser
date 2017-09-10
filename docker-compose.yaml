@@ -7,6 +7,7 @@ services:
       - ./mongofiles:/data/db
   gsclparser:
       build: ./
+      image: vistrcm/gsclparser
       depends_on:
         - mongo
       environment:
