@@ -1,18 +1,24 @@
-import logging
 from typing import Dict, NewType
 
 import bson
 import pymongo
 import requests
+from flask import Flask, request
 
 import parser
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+app = Flask(__name__)
+
+logger = app.logger
 
 # some additional types defined
 PyMongoCollection = NewType("PyMongoCollection", pymongo.collection.Collection)
 BsonObjID = NewType("BsonObjID", bson.objectid.ObjectId)
+
+# initialize mongo
+MONGO_URL = "mongodb://localhost:27017/"
+MONGO_CLIENT = pymongo.MongoClient(MONGO_URL)
+MONGO_DB = MONGO_CLIENT['craigslist']
 
 
 def retrieve_record(url: str) -> str:
@@ -22,7 +28,7 @@ def retrieve_record(url: str) -> str:
     return response.text
 
 
-def process(url: str, mongo_col) -> BsonObjID:
+def process(url: str, col_name: str) -> str:
     """process record
 
     retrieve html page, parse it and persist record"""
@@ -32,10 +38,10 @@ def process(url: str, mongo_col) -> BsonObjID:
     parsed_record["url"] = url
     logger.debug("parsed record: %s", parsed_record)
 
+    mongo_col = MONGO_DB[col_name]
     post_id = persist(mongo_col, parsed_record)
     logger.info("post from url %s saved with id %s", url, post_id)
-
-    return post_id
+    return str(post_id)
 
 
 def persist(mongo_col: PyMongoCollection, record: Dict[str, str]):
@@ -44,12 +50,17 @@ def persist(mongo_col: PyMongoCollection, record: Dict[str, str]):
     return post_id
 
 
-if __name__ == "__main__":
-    record_url = "https://sfbay.craigslist.org/sby/mcy/6299581569.html"
-    mongo_url = "mongodb://localhost:27017/"
+# flask routes
+@app.route("/")
+def index():
+    return "Hello. Who are you?"
 
-    client = pymongo.MongoClient(mongo_url)
-    db = client['craigslist']
-    collection = db['r1200gs']
 
-    process(record_url, collection)
+@app.route('/<string:collection>', methods=['GET', 'POST'])
+def http_handler(collection: str):
+    if request.method == 'POST':
+        post_url = request.form["PostUrl"]
+        created_id = process(post_url, collection)
+        return created_id
+    else:
+        return "Hmm. Still... Who are you?"
