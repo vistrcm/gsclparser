@@ -46,6 +46,7 @@ def process(url: str, col_name: str) -> str:
     retrieve html page, parse it and persist record"""
     logger.info("processing url %s", url)
     r = retrieve_record(url)
+    logger.info("record retrieved for url %s", url)
     parsed_record = parser.parse(r)
     parsed_record["url"] = url
     logger.debug("parsed record: %s", parsed_record)
