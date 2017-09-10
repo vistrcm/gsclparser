@@ -11,7 +11,13 @@ import parser
 
 app = Flask(__name__)
 
-logging.basicConfig(level=logging.INFO)
+debug_set = os.environ.get("DEBUG")
+if debug_set is None:
+    log_level = logging.INFO
+else:
+    log_level = logging.DEBUG
+
+logging.basicConfig(level=log_level)
 logger = logging.getLogger()
 
 # some additional types defined
