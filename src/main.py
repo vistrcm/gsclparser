@@ -28,6 +28,7 @@ BsonObjID = NewType("BsonObjID", bson.objectid.ObjectId)
 # use env variable MONGO_URL to get connection to the mongo server.
 # localhost by default
 MONGO_URL = os.environ.get("MONGO_URL", "mongodb://localhost:27017/")
+logger.info("MONGO_URL: %s", MONGO_URL)
 MONGO_CLIENT = pymongo.MongoClient(MONGO_URL)
 MONGO_DB = MONGO_CLIENT['craigslist']
 
