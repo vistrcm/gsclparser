@@ -2,20 +2,12 @@ import logging
 from typing import Dict, NewType
 
 import bs4
-import requests
 from bs4 import BeautifulSoup
 
 logger = logging.getLogger(__name__)
 
-# some addtional types defined
+# some additional types defined
 BS4ResultSet = NewType("BS4ResultSet", bs4.element.ResultSet)
-
-
-def retrieve_record(record_url: str) -> str:
-    """retrieve record from the url"""
-    response = requests.get(record_url)
-    response.raise_for_status()
-    return response.text
 
 
 def _parse_attrgroups(attrgroups: BS4ResultSet) -> Dict[str, str]:
@@ -38,7 +30,7 @@ def _parse_attrgroups(attrgroups: BS4ResultSet) -> Dict[str, str]:
     return attributes
 
 
-def parse_record(record: str) -> Dict[str, str]:
+def parse(record: str) -> Dict[str, str]:
     """parse record using beautifulsoup4"""
     soup = BeautifulSoup(record, 'html.parser')
 
@@ -94,16 +86,3 @@ def parse_record(record: str) -> Dict[str, str]:
         "noticies": notices
     }
     return result
-
-
-def process_record(url: str) -> Dict[str, str]:
-    r = retrieve_record(url)
-    parsed_record = parse_record(r)
-    parsed_record["url"] = url
-    return parsed_record
-
-
-if __name__ == "__main__":
-    record_url = "https://sfbay.craigslist.org/sby/mcy/6299581569.html"
-
-    print(process_record(record_url))
