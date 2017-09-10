@@ -5,9 +5,9 @@ import requests
 logger = logging.getLogger(__name__)
 
 
-def retrieve_record(url: str) -> str:
+def retrieve_record(record_url: str) -> str:
     """retrieve record from the url"""
-    response = requests.get(url)
+    response = requests.get(record_url)
     response.raise_for_status()
     return response.text
 
