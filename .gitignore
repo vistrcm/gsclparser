@@ -7,3 +7,6 @@ __pycache__
 
 # mongo data
 mongofiles/
+
+# os
+.DS_Store
