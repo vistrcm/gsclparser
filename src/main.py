@@ -71,7 +71,7 @@ def index():
 @app.route('/<string:collection>', methods=['GET', 'POST'])
 def http_handler(collection: str):
     if request.method == 'POST':
-        post_url = request.form["PostUrl"]
+        post_url = request.get_data()  # getting raw data
         created_id = process(post_url, collection)
         return created_id
     else:
