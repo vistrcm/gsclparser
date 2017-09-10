@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Dict, NewType
 
 import bson
@@ -18,7 +19,9 @@ PyMongoCollection = NewType("PyMongoCollection", pymongo.collection.Collection)
 BsonObjID = NewType("BsonObjID", bson.objectid.ObjectId)
 
 # initialize mongo
-MONGO_URL = "mongodb://localhost:27017/"
+# use env variable MONGO_URL to get connection to the mongo server.
+# localhost by default
+MONGO_URL = os.environ.get("MONGO_URL", "mongodb://localhost:27017/")
 MONGO_CLIENT = pymongo.MongoClient(MONGO_URL)
 MONGO_DB = MONGO_CLIENT['craigslist']
 
