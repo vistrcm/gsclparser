@@ -1,3 +1,4 @@
+import logging
 from typing import Dict, NewType
 
 import bson
@@ -9,7 +10,8 @@ import parser
 
 app = Flask(__name__)
 
-logger = app.logger
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger()
 
 # some additional types defined
 PyMongoCollection = NewType("PyMongoCollection", pymongo.collection.Collection)
