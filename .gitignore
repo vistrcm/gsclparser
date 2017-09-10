@@ -5,3 +5,5 @@ gsclparser.iml
 # python
 __pycache__
 
+# mongo data
+mongofiles/
