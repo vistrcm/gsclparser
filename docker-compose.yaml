@@ -1,0 +1,15 @@
+version: '3'
+services:
+  mongo:
+    image: mongo
+    command: "--storageEngine wiredTiger"
+    volumes:
+      - ./mongofiles:/data/db
+  gsclparser:
+      build: ./
+      depends_on:
+        - mongo
+      environment:
+        - MONGO_URL=mongodb://mongo:27017/
+      ports:
+        - 8000:8000
