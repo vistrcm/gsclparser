@@ -59,7 +59,14 @@ def parse(record: str) -> Dict[str, str]:
     mapbox = map_and_attrs.find("div", class_="mapbox")
     map = mapbox.find("div", id="map")
     map_attrs = map.attrs
-    mapaddress = mapbox.find("div", class_="mapaddress").text
+    mapaddress_div = mapbox.find("div", class_="mapaddress")
+
+    # it may not be div with class mapaddress
+    if mapaddress_div is None:
+        mapaddress = None
+    else:
+        mapaddress = mapaddress_div.text
+
 
     attrgroups = map_and_attrs.find_all("p", class_="attrgroup")
     attributes = _parse_attrgroups(attrgroups)
