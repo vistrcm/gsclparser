@@ -47,7 +47,13 @@ def parse(record: str) -> Dict[str, str]:
     posting_title = body.find("h2", class_="postingtitle")
     postingtitletext = posting_title.find("span", class_="postingtitletext")
     titletextonly = postingtitletext.find("span", id="titletextonly").text
-    price = postingtitletext.find("span", class_="price").text
+    price_span = postingtitletext.find("span", class_="price")
+
+    # handle empty price span
+    if price_span is None:
+        price = None
+    else:
+        price = price_span.text
 
     userbody = body.find("section", class_="userbody")
 
