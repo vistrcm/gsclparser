@@ -5,7 +5,7 @@ from typing import Dict, NewType
 import bson
 import pymongo
 import requests
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 import parser
 
@@ -63,10 +63,17 @@ def persist(mongo_col: PyMongoCollection, record: Dict[str, str]):
     return post_id
 
 
+def get_mongo_info() -> Dict[str, int]:
+    """show amount of documents per collection"""
+    collections = MONGO_DB.collection_names()
+    result = {collection: MONGO_DB[collection].count() for collection in collections}
+    return result
+
+
 # flask routes
 @app.route("/")
 def index():
-    return "Hello. Who are you?"
+    return jsonify(get_mongo_info())
 
 
 @app.route('/<string:collection>', methods=['GET', 'POST'])
