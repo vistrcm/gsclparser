@@ -46,7 +46,14 @@ def parse(record: str) -> Dict[str, str]:
 
     posting_title = body.find("h2", class_="postingtitle")
     postingtitletext = posting_title.find("span", class_="postingtitletext")
-    titletextonly = postingtitletext.find("span", id="titletextonly").text
+    titletextonly_span = postingtitletext.find("span", id="titletextonly")
+
+    # handle empty titletextonly span
+    if titletextonly_span is None:
+        titletextonly = None
+    else:
+        titletextonly = titletextonly_span.text
+
     price_span = postingtitletext.find("span", class_="price")
 
     # handle empty price span
@@ -72,7 +79,6 @@ def parse(record: str) -> Dict[str, str]:
         mapaddress = None
     else:
         mapaddress = mapaddress_div.text
-
 
     attrgroups = map_and_attrs.find_all("p", class_="attrgroup")
     attributes = _parse_attrgroups(attrgroups)
