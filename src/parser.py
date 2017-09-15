@@ -24,7 +24,11 @@ def _parse_attrgroups(attrgroups: BS4ResultSet) -> Dict[str, str]:
             key = "_name"
         # also will remove unnecessary symbols: spaces and ':'
         key = key.rstrip(" :")
-        value = attr.b.text
+        if attr.b is None:
+            value = str(attr)
+        else:
+            value = attr.b.text
+
         # build attributes dict
         attributes[key] = value
     return attributes
