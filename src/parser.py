@@ -74,15 +74,23 @@ def parse(record: str) -> Dict[str, str]:
     map_and_attrs = userbody.find("div", class_="mapAndAttrs")
 
     mapbox = map_and_attrs.find("div", class_="mapbox")
-    map = mapbox.find("div", id="map")
-    map_attrs = map.attrs
-    mapaddress_div = mapbox.find("div", class_="mapaddress")
+    if mapbox is not None:
+        map = mapbox.find("div", id="map")
+        map_attrs = map.attrs
+        mapaddress_div = mapbox.find("div", class_="mapaddress")
 
-    # it may not be div with class mapaddress
-    if mapaddress_div is None:
-        mapaddress = None
+        # it may not be div with class mapaddress
+        if mapaddress_div is None:
+            mapaddress = None
+        else:
+            mapaddress = mapaddress_div.text
+
+        map_element = {
+            "mapaddress": mapaddress,
+            "map_attrs": map_attrs,
+        }
     else:
-        mapaddress = mapaddress_div.text
+        map_element = None
 
     attrgroups = map_and_attrs.find_all("p", class_="attrgroup")
     attributes = _parse_attrgroups(attrgroups)
@@ -100,10 +108,7 @@ def parse(record: str) -> Dict[str, str]:
         "titletextonly": titletextonly,
         "price": price,
         "thumb_links": thumb_links,
-        "map": {
-            "mapaddress": mapaddress,
-            "map_attrs": map_attrs,
-        },
+        "map": map_element,
         "attributes": attributes,
         "post_text": post_text,
         "noticies": notices
