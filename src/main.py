@@ -48,7 +48,7 @@ def process(url: str, col_name: str) -> str:
     r = retrieve_record(url)
     logger.info("record retrieved for url %s", url)
     parsed_record = parser.parse(r)
-    parsed_record["url"] = url
+    parsed_record["url"] = url.decode("utf-8")
     logger.debug("parsed record: %s", parsed_record)
 
     mongo_col = MONGO_DB[col_name]
