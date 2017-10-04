@@ -62,9 +62,16 @@ def parse(record: str) -> Dict[str, str]:
 
     # handle empty price span
     if price_span is None:
+        price_text = None
         price = None
     else:
-        price = price_span.text
+        price_text = price_span.text
+        # price usually goes with '$' sign. Let's try to remove it.
+        price_no_dollar = price_text.lstrip("$")
+        if price_no_dollar.isdigit():
+            price = float(price_no_dollar)
+        else:
+            price = None
 
     userbody = body.find("section", class_="userbody")
 
@@ -106,6 +113,7 @@ def parse(record: str) -> Dict[str, str]:
         "title": title,
         "post_date": post_date,
         "titletextonly": titletextonly,
+        "price_text": price_text,
         "price": price,
         "thumb_links": thumb_links,
         "map": map_element,
